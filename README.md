@@ -1,17 +1,24 @@
-<!-- - 👋 Hi, I’m @DukeNan
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ... -->
+<h2 align="center">Hello there, I'm Shaun</h2>
 
-<!---
-DukeNan/DukeNan is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+<p align="center">
+Hi, I'm Shaun, a backend engineer from Shenzhen, China. Dedicated to being a fullstack engineer.
+<br>
+📫 How to reach me: <a href="mailto: dukenan006@163.com">dukenan006@163.com</a>
+</p>
 
 
-<!-- <p align="center"> <img src="https://github-readme-stats.vercel.app/api?username=DukeNan&show_icons=true&theme=gotham" alt="DukeNan" /> -->
+<h2 align="center">Languages & Frameworks & Tools & Abilities</h2>
 
+<p align="center">
+  <code><img title="Python" height="25" src="./images/python-5.svg"></code>
+  <code><img title="Go" height="25" src="./images/go-logo-1.svg"></code>
+  <code><img title="Linux" height="25" src="./images/linux-tux.svg"></code>
+  <code><img title="Docker" height="25" src="./images/docker.svg"></code>
+  <code><img title="HTML" height="25" src="./images/html5.svg"></code>
+  <code><img title="Nginx" height="25" src="./images/nginx-1.svg"></code>
+  <code><img title="Mysql" height="25" src="./images/mysql-6.svg"></code>
+  <code><img title="Redis" height="25" src="./images/redis.svg"></code>
+</p>
 
 <p align=center>
   <a href="https://github.com/anuraghazra/github-readme-stats" title="Go to Source">

@@ -8,17 +8,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      APP_CODE: ${{ secrets.APP_CODE }}
+
     steps:
       - name: Checkout
-        users: actions/checkout@v2
+        uses: actions/checkout@v2
+
       - name: Set up Python 3.8.6
         uses: actions/setup-python@v2
         with:
             python-version: '3.8.6'
+
+      - name: Update README
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python3 updaye.py
-      - name: Update README
-        run: |
+          python3 update.py
           sh deploy.sh

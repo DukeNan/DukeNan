@@ -3,12 +3,16 @@ name: Build README
 on:
   schedule:
     - cron: '0 */3 * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       APP_CODE: ${{ secrets.APP_CODE }}
+      TZ: Asia/Shanghai
 
     steps:
       - name: Checkout
@@ -28,6 +32,7 @@ jobs:
       - name: Publish
         run: |
           git add .
+          git diff --exit-code
           git config --global user.email "dukenan006@163.com"
           git config --global user.name "shaun"
           git commit -m "update README,  $(date "+%a %b %d %H:%M %Z")" || echo "No changes to commit"

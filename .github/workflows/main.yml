@@ -31,7 +31,7 @@ jobs:
 
       - name: Publish
         run: |
-          git diff --exit-code
+          git diff
           git add .
           git config --global user.email "dukenan006@163.com"
           git config --global user.name "shaun"

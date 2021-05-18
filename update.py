@@ -54,7 +54,7 @@ def run():
     sun_date = get_data(str(now.date()))
     data.update(weather_data)
     data.update(sun_date)
-    data['refresh_date'] = '{}, {}'.format(now.strftime('%a %b %d %H:%M'), time.strftime('%Z', time.localtime()))
+    data['refresh_date'] = '{} {}'.format(now.strftime('%a %b %d %H:%M'), time.strftime('%Z', time.localtime()))
     update_readme(data)
     print('README file updated')
     return 'successful'

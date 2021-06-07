@@ -37,10 +37,10 @@ Hi, I'm Shaun, a backend engineer from Shenzhen, China. Dedicated to being a ful
 
 <p align="center">
     Currently, the weather is: <b> 26°C</b></br>
-    Maximum temperature and minimum temperature: <b>26°C ~ 32°C </b></br>
-    Today, the sun rises at <b>05:38 CST</b> and sets at <b>19:06 CST</b>.
+    Maximum temperature and minimum temperature: <b>26°C ~ 31°C </b></br>
+    Today, the sun rises at <b>05:38 CST</b> and sets at <b>19:07 CST</b>.
 </p>
 <p align="center">
     This <i>README</i> file is generated <b>every 3 hours</b>!</br>
-    Last refresh: Mon Jun 07 23:48 CST <br/>
+    Last refresh: Tue Jun 08 03:55 CST <br/>
 </p>

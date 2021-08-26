@@ -1,12 +1,11 @@
-import time
 import os
-from datetime import datetime
-
+import random
 import requests
+import time
+from datetime import datetime
 from lxml import etree
 
 APP_CODE = os.getenv('APP_CODE', 'abc')
-
 
 
 def get_weather(app_code):
@@ -48,6 +47,8 @@ def update_readme(data):
 
 
 def run():
+    if random.randint(0, 1):
+        return "Skip update"
     now = datetime.now()
     data = {}
     weather_data = get_weather(APP_CODE)

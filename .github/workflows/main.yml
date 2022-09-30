@@ -31,10 +31,11 @@ jobs:
 
       - name: Update README
         run: |
-          wget -O ./images/weather.png  wttr.in/Shenzhen_0pqm_lang=en.png
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python3 update.py
+          if [[ -z $(git diff) ]]; then exit 0; fi
+          wget -O ./images/weather.png  wttr.in/Shenzhen_0pqm_lang=en.png
 
       - name: Publish
         run: |

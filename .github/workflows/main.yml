@@ -1,0 +1,46 @@
+name: Build README
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_CODE: ${{ secrets.APP_CODE }}
+      TZ: Asia/Shanghai
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8.6
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.8.6'
+
+      - name: Clear Log
+        run: |
+          git pull
+          git reset `git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}'`
+          git checkout .
+
+      - name: Update README
+        run: |
+          wget -O ./images/weather.png  wttr.in/Shenzhen_0pqm_lang=en.png
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python3 update.py
+
+      - name: Publish
+        run: |
+          git diff
+          git add .
+          git config --global user.email "dukenan006@163.com"
+          git config --global user.name "shaun"
+          git commit -m "update README,  $(date "+%a %b %d %H:%M %Z")" || echo "No changes to commit"
+          git push -f

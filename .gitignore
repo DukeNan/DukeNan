@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+/.venv
+/.env
+.vscode/
+# jetbrains config
+/.idea
+.DS_Store
+.ropeproject
+demo.py

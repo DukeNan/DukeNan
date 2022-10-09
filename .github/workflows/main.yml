@@ -23,25 +23,7 @@ jobs:
         with:
             python-version: '3.8.6'
 
-      - name: Clear Log
+      - name: Run Script
         run: |
-          git pull
-          git reset `git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}'`
-          git checkout .
-
-      - name: Update README
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          python3 update.py
-          if [[ -z $(git diff) ]]; then exit 0; fi
-          wget -O ./images/weather.png  wttr.in/Shenzhen_0pqm_lang=en.png
-
-      - name: Publish
-        run: |
-          git diff
-          git add .
-          git config --global user.email "dukenan006@163.com"
-          git config --global user.name "shaun"
-          git commit -m "update README,  $(date "+%a %b %d %H:%M %Z")" || echo "No changes to commit"
-          git push -f
+          chmod +x run.sh
+          /bin/bash run.sh

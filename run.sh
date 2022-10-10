@@ -2,11 +2,17 @@
 
 function cleanGitLog () {
    echo '=========清除git日志========='
-   
-    logHashCode=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}')
-    git pull
-    git reset "$logHashCode"
-    git checkout .
+
+   logHashCode=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}')
+   logInfo=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $1, $3}')
+
+   git pull
+   echo '查看git提交日志'
+   git log -n 5
+
+   echo "git回退日志信息: ${logInfo}"
+   git reset "$logHashCode"
+   git checkout .
 }
 
 function updateRepository () {

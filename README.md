@@ -35,14 +35,16 @@ Hi, I'm Shaun, a backend engineer from Shenzhen, China. Dedicated to being a ful
     <img height="300px" src="./images/sz03.jpeg" />
 </p>
 <h2 align="center">Weather</h2>
-<img src="./images/weather.png">
+<p align=center>
+    <img src="./images/weather.png" align="center">
+</p>
 <p align="center">
-    Currently, the weather is: <b> Light rain shower</b></br>
+    Currently, the weather is: <b> Sunny</b></br>
     The current temperature is: <b> 26°C</b></br>
-    Maximum temperature and minimum temperature: <b>26°C ~ 28°C </b></br>
-    Today, the sun rises at <b>05:58 CST</b> and sets at <b>18:59 CST</b>.
+    Maximum temperature and minimum temperature: <b>22°C ~ 31°C </b></br>
+    Today, the sun rises at <b>06:22 CST</b> and sets at <b>17:54 CST</b>.
 </p>
 <p align="center">
     This <i>README</i> file is generated <b>every 3 hours</b>!</br>
-    Last refresh: Wed Aug 10 00:03 CST <br/>
+    Last refresh: Fri Oct 21 10:03 CST <br/>
 </p>

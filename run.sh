@@ -3,16 +3,16 @@
 function cleanGitLog () {
    echo '=========清除git日志========='
 
+   git pull
    logHashCode=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}')
    logInfo=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $1, $3}')
 
-   git pull
    echo '查看git提交日志'
-   git log -n 5
+   # git log -n 5
+   git log --pretty=format:"%ad %H %s" | xargs -I {} echo {};
 
    echo "git回退日志信息: ${logInfo}"
-   git reset "$logHashCode"
-   git checkout .
+   git reset --hard "$logHashCode"
 }
 
 function updateRepository () {

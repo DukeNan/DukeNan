@@ -74,8 +74,12 @@ def get_sunrise_daily(date="20190801", city="shenzhen"):
         url,
         headers={"User-Agent": "Mozilla/5.0 (compatible; DukeNan/1.0)"},
     )
-    soup = BeautifulSoup(res.text, "lxml")
-    table = soup.find("table", id="as-monthsun") or soup.find_all("table")[1]
+    soup = BeautifulSoup(res.text, "html5lib")
+    table = soup.find("table", id="as-monthsun")
+    if table is None:
+        tables = soup.find_all("table")
+        table = tables[1] if len(tables) >= 2 else tables[0]
+
     rows = table.find_all("tr")
     headers = [c.get_text(strip=True) for c in rows[1].find_all(["th", "td"])]
 
@@ -85,6 +89,9 @@ def get_sunrise_daily(date="20190801", city="shenzhen"):
         cells = [c.get_text(strip=True) for c in row.find_all(["th", "td"])]
         if cells and str(cells[0]).zfill(2) == day:
             matched = dict(zip(headers, cells[: len(headers)]))
+
+    if matched is None:
+        raise RuntimeError(f"Sunrise data not found for date={date}")
 
     sun_rise = matched["Sunrise"]
     sun_set = matched["Sunset"]

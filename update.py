@@ -77,8 +77,20 @@ def log_format(data, cost_time):
     print("=====================log==================================\n")
 
 
+def _already_updated_today():
+    """检查 README 今天是否已经更新过"""
+    try:
+        with open("README.md", "r") as f:
+            content = f.read()
+        now = datetime.now()
+        return now.strftime("%b %d") in content
+    except FileNotFoundError:
+        return False
+
+
 def run():
-    if random.randint(0, 1):
+    skip = random.randint(0, 1)
+    if skip and _already_updated_today():
         return "Skip update"
     now = datetime.now()
     data = {}

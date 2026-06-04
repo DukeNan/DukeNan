@@ -1,12 +1,48 @@
 import json
 import random
 import time
+import urllib.parse
+import urllib.request
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
-import requests
-from bs4 import BeautifulSoup
+LATITUDE = 22.5431
+LONGITUDE = 114.0579
+TIMEZONE = "Asia/Shanghai"
 
-CITY = "Shenzhen"
+OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+SUNRISE_SUNSET_URL = "https://api.sunrise-sunset.org/json"
+
+WMO_WEATHER = {
+    0: "Clear sky",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    45: "Fog",
+    48: "Depositing rime fog",
+    51: "Light drizzle",
+    53: "Moderate drizzle",
+    55: "Dense drizzle",
+    56: "Light freezing drizzle",
+    57: "Dense freezing drizzle",
+    61: "Slight rain",
+    63: "Moderate rain",
+    65: "Heavy rain",
+    66: "Light freezing rain",
+    67: "Heavy freezing rain",
+    71: "Slight snow",
+    73: "Moderate snow",
+    75: "Heavy snow",
+    77: "Snow grains",
+    80: "Slight rain showers",
+    81: "Moderate rain showers",
+    82: "Violent rain showers",
+    85: "Slight snow showers",
+    86: "Heavy snow showers",
+    95: "Thunderstorm",
+    96: "Thunderstorm with slight hail",
+    99: "Thunderstorm with heavy hail",
+}
 
 
 def _day_of_month(lt):
@@ -46,73 +82,67 @@ def _today_refresh_markers(lt=None):
     )
 
 
-def get_weather(city):
-    # https://wttr.in/Shenzhen?format=j1&lang=zh-cn
-    url = f"https://wttr.in/{city}?format=j1&lang=zh-cn"
-    data = requests.get(url).json()
-    current_condition = data["current_condition"][0]
-    weather = data["weather"][0]
-    weatherDesc = current_condition["weatherDesc"][0]["value"].split(",")[0]
-    current_temp = current_condition["temp_C"]
-    max_temp = weather["maxtempC"]
-    min_temp = weather["mintempC"]
-
-    resp = {
-        "max_temp": max_temp,
-        "min_temp": min_temp,
-        "current_temp": current_temp,
-        "weatherDesc": weatherDesc,
-    }
-    return resp
+def weather_code_desc(code):
+    return WMO_WEATHER.get(code, f"Weather code {code}")
 
 
-def get_sunrise_daily(date="20190801", city="shenzhen"):
-    year = date[:4]
-    month = date[4:6]
-    url = f"https://www.timeanddate.com/sun/china/{city}?month={month}&year={year}"
-    res = requests.get(
-        url,
-        headers={"User-Agent": "Mozilla/5.0 (compatible; DukeNan/1.0)"},
+def fetch_json(url, params=None, timeout=30):
+    if params:
+        url = f"{url}?{urllib.parse.urlencode(params)}"
+    req = urllib.request.Request(url, headers={"User-Agent": "DukeNan/1.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode())
+
+
+def format_utc_iso_to_local_hm(iso_time):
+    dt = datetime.fromisoformat(iso_time)
+    local = dt.astimezone(ZoneInfo(TIMEZONE))
+    return local.strftime("%H:%M")
+
+
+def get_weather():
+    data = fetch_json(
+        OPEN_METEO_URL,
+        params={
+            "latitude": LATITUDE,
+            "longitude": LONGITUDE,
+            "current": "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code",
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset",
+            "timezone": TIMEZONE,
+        },
     )
-    soup = BeautifulSoup(res.text, "html5lib")
-    table = soup.find("table", id="as-monthsun")
-    if table is None:
-        tables = soup.find_all("table")
-        table = tables[1] if len(tables) >= 2 else tables[0]
+    current = data["current"]
+    daily = data["daily"]
 
-    rows = table.find_all("tr")
-    headers = [c.get_text(strip=True) for c in rows[1].find_all(["th", "td"])]
-
-    day = date[6:].zfill(2)
-    matched = None
-    for row in rows[3:-1]:
-        cells = [c.get_text(strip=True) for c in row.find_all(["th", "td"])]
-        if cells and str(cells[0]).zfill(2) == day:
-            matched = dict(zip(headers, cells[: len(headers)]))
-
-    if matched is None:
-        raise RuntimeError(f"Sunrise data not found for date={date}")
-
-    sun_rise = matched["Sunrise"]
-    sun_set = matched["Sunset"]
-    resp = {
-        "sun_rise": format_time_string(sun_rise),
-        "sun_set": format_time_string(sun_set),
+    return {
+        "max_temp": str(int(round(daily["temperature_2m_max"][0]))),
+        "min_temp": str(int(round(daily["temperature_2m_min"][0]))),
+        "current_temp": str(int(round(current["temperature_2m"]))),
+        "weatherDesc": weather_code_desc(current["weather_code"]),
     }
-    return resp
 
 
-def format_time_string(time_str: str):
-    time_str = time_str.lower()
-    temp_str = time_str.split(" ")[0]
-    hour, minute = temp_str.split(":")
-    if "am" in time_str:
-        hour = hour.zfill(2)
-    elif "pm" in time_str:
-        hour = str(int(hour) + 12)
-    else:
-        pass
-    return f"{hour}:{minute}"
+def get_sunrise_daily(date=None):
+    if date is None:
+        date = datetime.now().strftime("%Y-%m-%d")
+    elif len(date) == 8:
+        date = f"{date[:4]}-{date[4:6]}-{date[6:8]}"
+
+    payload = fetch_json(
+        SUNRISE_SUNSET_URL,
+        params={
+            "lat": LATITUDE,
+            "lng": LONGITUDE,
+            "date": date,
+            "formatted": 0,
+        },
+    )
+    results = payload["results"]
+
+    return {
+        "sun_rise": format_utc_iso_to_local_hm(results["sunrise"]),
+        "sun_set": format_utc_iso_to_local_hm(results["sunset"]),
+    }
 
 
 def update_readme(data):
@@ -145,10 +175,8 @@ def run():
         return "Skip update"
     now = datetime.now()
     data = {}
-    weather_data = get_weather(CITY)
-    sun_date = get_sunrise_daily(now.strftime("%Y%m%d"), CITY)
-    data.update(weather_data)
-    data.update(sun_date)
+    data.update(get_weather())
+    data.update(get_sunrise_daily(now.strftime("%Y%m%d")))
     data["refresh_date"] = format_bin_date()
     update_readme(data)
     log_format(data, (datetime.now() - now).microseconds / 1000)

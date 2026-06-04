@@ -7,13 +7,12 @@ function cleanGitLog () {
    git checkout -b shaun
    git checkout main
    logHashCode=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $2}')
-   logInfo=$(git log --pretty=format:"%ad=%H=%s" | grep -v 'CST' | head -n 1 | awk -F "=" '{print $1, $3}')
 
    echo '查看git提交日志'
    # git log -n 5
    git log --pretty=format:"%ad %H %s" | xargs -I {} echo {};
 
-   # echo "git回退日志信息: ${logInfo}"
+
    git reset --hard "$logHashCode"
    git merge --squash shaun
 }
@@ -30,7 +29,7 @@ function updateRepository () {
 
 function commitRepository () {
    echo '=========提交代码仓库========='
-   
+
    git add .
    git config --global user.email "dukenan006@163.com"
    git config --global user.name "shaun"

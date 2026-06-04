@@ -2,12 +2,48 @@ import json
 import random
 import time
 from datetime import datetime
-from io import StringIO
 
-import pandas as pd
 import requests
+from bs4 import BeautifulSoup
 
 CITY = "Shenzhen"
+
+
+def _day_of_month(lt):
+    """与 /bin/date 的 %e 一致：1–9 日为前导空格而非 0。"""
+    return f"{lt.tm_mday:2d}"
+
+
+def _timezone_abbr(lt):
+    tz = time.strftime("%Z", lt)
+    if tz:
+        return tz
+    if lt.tm_isdst:
+        return time.tzname[1] or time.tzname[0] or "UTC"
+    return time.tzname[0] or "UTC"
+
+
+def format_bin_date(lt=None):
+    """与 macOS / Linux 默认 `date` 输出一致（C locale）。"""
+    if lt is None:
+        lt = time.localtime()
+    return (
+        f"{time.strftime('%a %b', lt)} {_day_of_month(lt)} "
+        f"{time.strftime('%H:%M:%S', lt)} {_timezone_abbr(lt)} {lt.tm_year}"
+    )
+
+
+def _today_refresh_markers(lt=None):
+    """README 中可能出现的“今日”日期片段（兼容旧格式）。"""
+    if lt is None:
+        lt = time.localtime()
+    month = time.strftime("%b", lt)
+    year = lt.tm_year
+    day = lt.tm_mday
+    return (
+        f"{month} {_day_of_month(lt)} {year}",
+        f"{month} {day:02d} {year}",
+    )
 
 
 def get_weather(city):
@@ -34,15 +70,24 @@ def get_sunrise_daily(date="20190801", city="shenzhen"):
     year = date[:4]
     month = date[4:6]
     url = f"https://www.timeanddate.com/sun/china/{city}?month={month}&year={year}"
-    res = requests.get(url)
-    table = pd.read_html(StringIO(res.text), header=2)[1]
-    month_df = table.iloc[:-1,]
-    day_df = month_df[month_df.iloc[:, 0].astype(str).str.zfill(2) == date[6:]]
-    day_df.index = pd.to_datetime([date] * len(day_df), format="%Y%m%d")
+    res = requests.get(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; DukeNan/1.0)"},
+    )
+    soup = BeautifulSoup(res.text, "lxml")
+    table = soup.find("table", id="as-monthsun") or soup.find_all("table")[1]
+    rows = table.find_all("tr")
+    headers = [c.get_text(strip=True) for c in rows[1].find_all(["th", "td"])]
 
-    ser = day_df.iloc[-1]
-    sun_rise = ser["Sunrise"]
-    sun_set = ser["Sunset"]
+    day = date[6:].zfill(2)
+    matched = None
+    for row in rows[3:-1]:
+        cells = [c.get_text(strip=True) for c in row.find_all(["th", "td"])]
+        if cells and str(cells[0]).zfill(2) == day:
+            matched = dict(zip(headers, cells[: len(headers)]))
+
+    sun_rise = matched["Sunrise"]
+    sun_set = matched["Sunset"]
     resp = {
         "sun_rise": format_time_string(sun_rise),
         "sun_set": format_time_string(sun_set),
@@ -82,8 +127,7 @@ def _already_updated_today():
     try:
         with open("README.md", "r") as f:
             content = f.read()
-        now = datetime.now()
-        return now.strftime("%b %d") in content
+        return any(marker in content for marker in _today_refresh_markers())
     except FileNotFoundError:
         return False
 
@@ -98,9 +142,7 @@ def run():
     sun_date = get_sunrise_daily(now.strftime("%Y%m%d"), CITY)
     data.update(weather_data)
     data.update(sun_date)
-    data["refresh_date"] = "{} {}".format(
-        now.strftime("%a %b %d %H:%M"), time.strftime("%Z", time.localtime())
-    )
+    data["refresh_date"] = format_bin_date()
     update_readme(data)
     log_format(data, (datetime.now() - now).microseconds / 1000)
 

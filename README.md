@@ -1,13 +1,13 @@
 <h2 align="center">Hello there, I'm Shaun</h2>
 
 <p align="center">
-Hi, I'm Shaun, a backend engineer from Shenzhen, China. Dedicated to being a fullstack engineer.
+I'm a backend engineer from Shenzhen, China, and I'm expanding my skills in full-stack development.
 <br>
 📫 How to reach me: <a href="mailto: dukenan006@163.com">dukenan006@163.com</a>
 </p>
 
 
-<h2 align="center">Languages & Frameworks & Tools & Abilities</h2>
+<h2 align="center">Tech Stack</h2>
 
 <p align="center">
   <code><img title="Python" height="25" src="./images/python-5.svg"></code>
@@ -28,23 +28,22 @@ Hi, I'm Shaun, a backend engineer from Shenzhen, China. Dedicated to being a ful
   <img height="130" align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=DukeNan&hide=shell&title_color=2aa889&text_color=99d1ce&icon_color=2bbc8a&bg_color=0c1014&langs_count=8&layout=compact" />
   </a>
 </p>
-<h2 align="center">Beautiful city</h2>
+<h2 align="center">Scenes from Shenzhen</h2>
 <p align=center>
     <img height="300px" src="./images/sz01.jpeg" />
     <img height="300px" src="./images/sz02.jpeg" />
     <img height="300px" src="./images/sz03.jpeg" />
 </p>
-<h2 align="center">Weather</h2>
+<h2 align="center">Shenzhen Weather</h2>
 <p align=center>
     <img src="./images/weather.png" align="center">
 </p>
 <p align="center">
-    Currently, the weather is: <b> Moderate rain</b></br>
-    The current temperature is: <b> 23°C</b></br>
-    Maximum temperature and minimum temperature: <b>23°C ~ 23°C </b></br>
-    Today, the sun rises at <b>06:41 CST</b> and sets at <b>17:38 CST</b>.
+    Conditions: <b>Moderate rain</b><br>
+    Current temperature: <b>23°C</b><br>
+    Today's low / high: <b>23°C / 23°C</b><br>
+    Sunrise / sunset (UTC+8): <b>06:41 / 17:38</b>
 </p>
 <p align="center">
-    This <i>README</i> file is generated <b>every 3 hours</b>!</br>
-    Last refresh: Wed Nov 23 09:27 CST <br/>
+    Last updated: Wed Nov 23 09:27 CST
 </p>

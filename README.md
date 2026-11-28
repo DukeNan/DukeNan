@@ -35,15 +35,12 @@ I'm a backend engineer from Shenzhen, China, and I'm expanding my skills in full
     <img height="300px" src="./images/sz03.jpeg" />
 </p>
 <h2 align="center">Shenzhen Weather</h2>
-<p align=center>
-    <img src="./images/weather.png" align="center">
+<p align="center">
+    Conditions: <b>Clear sky</b><br>
+    Current temperature: <b>17°C</b><br>
+    Today's low / high: <b>17°C / 26°C</b><br>
+    Sunrise / sunset (UTC+8): <b>06:44 / 17:38</b>
 </p>
 <p align="center">
-    Conditions: <b>Moderate rain</b><br>
-    Current temperature: <b>23°C</b><br>
-    Today's low / high: <b>23°C / 23°C</b><br>
-    Sunrise / sunset (UTC+8): <b>06:41 / 17:38</b>
-</p>
-<p align="center">
-    Last updated: Wed Nov 23 09:27 CST
+    Last updated: Sat Nov 28 23:12:30 CST 2026
 </p>
